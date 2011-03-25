@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <time.h>
+#include <wchar.h>
 
+wchar_t *SKY=L"甲乙丙丁戊己庚辛壬癸";
+wchar_t *EARTH=L"子丑寅卯辰巳午未申酉戌亥";
 
 static inline int isLeap(int y)
 {
@@ -24,6 +27,19 @@ int yday(int year, int month, int day)
 	return ( mon_yday + lmday );
 }
 
+int daySky(int year, int month, int day)
+{
+	int yd = yday(year, month, day);
+	return ( 2 + yd ) % 10;
+}
+
+int dayEarth(int year, int month, int day)
+{
+	int yd = yday(year, month, day);
+	return ( 4 + yd ) % 12;
+}
+
+
 int main( int argc, char **argv)
 {
 	time_t result;
@@ -33,7 +49,7 @@ int main( int argc, char **argv)
 	printf("Today is the %d day of this year.\n", brokentime->tm_yday);
 	printf("---------------------------------\n");
 
-		
+	wprintf(L"%s",SKY);		
 
 	if ( argc >=4 )
 	{
@@ -41,6 +57,7 @@ int main( int argc, char **argv)
 		printf( "This year is%sleap year.\n",isLeap(atoi(argv[1]))?" ":" not ");
 		//inputDate(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]),0,0,0);
 		//printf("argv[1] = %d\n", atoi(argv[1]));
+		printf("The day is %d, %d\n",( daySky(atoi(argv[1]), atoi(argv[2]), atoi(argv[3])) ), ( dayEarth(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]))));
 	}
 
 	return(0);

@@ -1,0 +1,8 @@
+Input your birth information (include year, month, day and time).
+Output Chinese Eight Character.
+
+Make binary
+$ make 
+
+Compute the days of certain year.
+$ ./eightchar 2011 3 25
