@@ -38,18 +38,38 @@ tempDE=0
 tempHS=0
 tempHE=0
 
-
+check_transfer(){
+	if test -e ./transfer ; then
+		return 0;
+	else
+		return 1;
+	fi
+}
 #=============================================================================================
 # The sky of month and earth of hour must use lunar's database or astronomical calculation.
 # 
 #=============================================================================================
 yearSE(){
-	tempYS=$(( ( iY + 6 ) % 10 ))
-	tempYE=$(( ( iY + 8 ) % 12 ))
+
+	check_transfer || ( echo "need file: transfer" && exit 0 )
+	if test $iH -ge 23 ; then
+		local tY=`./transfer $iY $iM $((iD=iD + 1)) | awk '{print $1}'`
+	else
+		local tY=`./transfer $iY $iM $iD | awk '{print $1}'`
+	fi
+	tempYS=$(( ( tY + 6 ) % 10 ))
+	tempYE=$(( ( tY + 8 ) % 12 ))
 }
 
 # the input of this function must lunar's year and month.
 monthSE(){
+
+	check_transfer || ( echo "need file: transfer" && exit 0 )
+	if test $iH -ge 23 ; then
+		local tM=`./transfer $iY $iM $((iD=iD + 1)) | awk '{print $2}'`
+	else
+		local tM=`./transfer $iY $iM $iD | awk '{print $2}'`
+	fi
 	# five tiger
 	case $tempYS in
 	0 | 5)
@@ -69,8 +89,8 @@ monthSE(){
 	;;
 	esac
 
-	tempME=$(( ( ( iM + 1 ) % 12 ) ))
-	tempMS=$(( ( tempMS + tempME ) % 10 ))
+	tempME=$(( ( ( tM + 1 ) % 12 ) ))
+	tempMS=$(( ( tempMS + ( tM - 1 )) % 10 ))
 	#Unfinished
 }
 
@@ -203,13 +223,14 @@ hourSE(){
 
 if test $# -ge 1 ; then
 	yearSE
+	monthSE
 	computeD_inc $iY
 fi
 if test $# -ge 3 ; then
 	#echo $tempS $tempE
 	daySE $iY $iM $iD
 	hourSE $tempDS $iH
-	echo  $iY $iM $iD $iH is ${SKY[$tempYS]}${EARTH[$tempYE]} 年 # ${SKY[$tempHS]}${EARTH[$tempHE]} 月
+	echo  $iY $iM $iD $iH is ${SKY[$tempYS]}${EARTH[$tempYE]} 年 ${SKY[$tempMS]}${EARTH[$tempME]} 月
 	echo  $iY $iM $iD $iH is ${SKY[$tempDS]}${EARTH[$tempDE]} 日 ${SKY[$tempHS]}${EARTH[$tempHE]} 時
 fi
 
