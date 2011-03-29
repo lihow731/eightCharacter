@@ -45,6 +45,89 @@ check_transfer(){
 		return 1;
 	fi
 }
+
+
+#=============================================================================================
+# color section: we use follow color funtion to set the color of string.
+# 
+#=============================================================================================
+setcolor(){
+	local c=$1
+	shift 1
+	if test "$1" == "-n" ; then
+		shift 1
+		echo -n -e "\033[${c}m$*\033[37;m" 
+	else
+		echo -e "\033[${c}m$*\033[37;m" 
+	fi
+}
+
+blue(){
+	setcolor 34 $*
+}
+
+green(){
+	setcolor 32 $*
+}
+
+white(){
+	setcolor 37 $*
+}
+
+red(){
+	setcolor 31 $*
+}
+
+yellow(){
+	setcolor 33 $*
+}
+
+sky(){
+	for s in $*
+	do
+		case $s in
+		0 | 1 )
+			green -n ${SKY[$s]}
+		;;	
+		2 | 3 )
+			red -n ${SKY[$s]}
+		;;	
+		4 | 5 )
+			yellow -n ${SKY[$s]}
+		;;	
+		6 | 7 )
+			white -n ${SKY[$s]}
+		;;	
+		8 | 9 )
+			blue -n ${SKY[$s]}
+		;;	
+		esac
+	done
+}
+
+earth(){
+	for e in $*
+	do
+		case $e in
+		11 | 0 ) 
+			blue -n ${EARTH[$e]}
+		;;
+		2 | 3 )
+			green -n ${EARTH[$e]}
+		;;
+		5 | 6 )
+			red -n ${EARTH[$e]}
+		;;
+		8 | 9 )
+			white -n ${EARTH[$e]}
+		;;
+		1 | 4 | 7 | 10 )
+			yellow -n ${EARTH[$e]}
+		;;
+		esac
+	done
+}
+
 #=============================================================================================
 # The sky of month and earth of hour must use lunar's database or astronomical calculation.
 # 
@@ -220,6 +303,60 @@ hourSE(){
 	tempHS=$(( ( tempHS + tempHE ) % 10 ))
 }
 
+hiddenSky(){
+	case $1 in 
+	0) #子
+		sky 9
+		#echo "癸"
+	;;
+	1) #丑
+		sky 6 9 7
+		#echo "巳癸辛"
+	;;
+	2) #寅
+		sky 0 2 4
+		#echo "甲丙戊"
+	;;
+	3) #卯
+		sky 1
+		#echo "乙"
+	;;
+	4) #辰
+		sky 4 1 9
+		#echo "戊乙癸"
+	;;
+	5) #巳
+		sky 2 4 6
+		#echo "丙戊庚"
+	;;
+	6) #午
+		sky 3 5
+		#echo "丁己"
+	;;
+	7) #未
+		sky 5 1 3
+		#echo "己乙丁"
+	;;
+	8) #申
+		sky 6 4 8
+		#echo "庚戊壬"
+	;;
+	9) #酉
+		sky 7
+		#echo "辛"
+	;;
+	10) #戌
+		sky 4 7 3
+		#echo "戊辛丁"
+	;;
+	11) #亥
+		sky 8 0
+		#echo "壬甲"
+	;;
+	esac
+}
+
+
 
 if test $# -ge 1 ; then
 	yearSE
@@ -230,7 +367,14 @@ if test $# -ge 3 ; then
 	#echo $tempS $tempE
 	daySE $iY $iM $iD
 	hourSE $tempDS $iH
-	echo  $iY $iM $iD $iH is ${SKY[$tempYS]}${EARTH[$tempYE]} 年 ${SKY[$tempMS]}${EARTH[$tempME]} 月
-	echo  $iY $iM $iD $iH is ${SKY[$tempDS]}${EARTH[$tempDE]} 日 ${SKY[$tempHS]}${EARTH[$tempHE]} 時
+	echo  $iY $iM $iD $iH is 
+	#echo  ${SKY[$tempYS]}${EARTH[$tempYE]} 年 `hiddenSky $tempYE`
+	#echo  ${SKY[$tempMS]}${EARTH[$tempME]} 月 `hiddenSky $tempME`
+	#echo  ${SKY[$tempDS]}${EARTH[$tempDE]} 日 `hiddenSky $tempDE`
+	#echo  ${SKY[$tempHS]}${EARTH[$tempHE]} 時 `hiddenSky $tempHE`
+	sky $tempYS; earth $tempYE; echo  年 `hiddenSky $tempYE`
+	sky $tempMS; earth $tempME; echo  月 `hiddenSky $tempME`
+	sky $tempDS; earth $tempDE; echo  日 `hiddenSky $tempDE`
+	sky $tempHS; earth $tempHE; echo  時 `hiddenSky $tempHE`
 fi
 
