@@ -5,9 +5,13 @@
 
 SKY=(甲 乙 丙 丁 戊 己 庚 辛 壬 癸)
 EARTH=(子 丑 寅 卯 辰 巳 午 未 申 酉 戌 亥)
+DAYOFWEEK=(日 一 二 三 四 五 六)
 
 monYday_normal=(0 31 59 90 120 151 181 212 243 273 304 334 365)
 monYday_leap=(0 31 60 91 121 152 182 213 244 274 305 335 366)
+
+# for computing day of week
+DoW=(0 3 2 5 0 3 5 1 4 6 2 4)
 
 iY=$1
 iM=$2
@@ -356,14 +360,23 @@ hiddenSky(){
 	esac
 }
 
+dayOfWeek(){
+	local y=$iY
+
+	if test $iM -lt 3 ; then
+		y=$(( y -1 ))
+	fi
+		
+	local dow=$((  ( y + ( y / 4 ) - ( y / 100 ) + ( y / 400 ) + ${DoW[ $(( iM - 1 ))]} + iD ) % 7 ))
+	echo "星期${DAYOFWEEK[$dow]}"
+
+}
 
 
-if test $# -ge 1 ; then
+if test $# -gt 3 ; then
 	yearSE
 	monthSE
 	computeD_inc $iY
-fi
-if test $# -ge 3 ; then
 	#echo $tempS $tempE
 	daySE $iY $iM $iD
 	hourSE $tempDS $iH
@@ -376,5 +389,6 @@ if test $# -ge 3 ; then
 	sky $tempMS; earth $tempME; echo  月 `hiddenSky $tempME`
 	sky $tempDS; earth $tempDE; echo  日 `hiddenSky $tempDE`
 	sky $tempHS; earth $tempHE; echo  時 `hiddenSky $tempHE`
+	dayOfWeek 
 fi
 
