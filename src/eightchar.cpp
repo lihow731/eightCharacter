@@ -16,15 +16,13 @@ eightchar::eightchar() {
 	bzero((void *)&day,  sizeof(echarinfo));
 	bzero((void *)&hour, sizeof(echarinfo));
 
+	tfl.readDB();
+
 	time_t result;
 	result = time(NULL);
 	now = localtime(&result);
 
-	year.input = now->tm_year;
-	mon.input  = now->tm_mon;
-	day.input  = now->tm_mday;
-	hour.input = now->tm_hour;
-
+	setdate(now->tm_year,now->tm_mon,now->tm_mday,now->tm_hour);
 }
 
 eightchar::~eightchar() {
@@ -37,6 +35,8 @@ eightchar::eightchar(int y, int m, int d, int h) {
 	bzero((void *)&day,  sizeof(echarinfo));
 	bzero((void *)&hour, sizeof(echarinfo));
 
+	tfl.readDB();
+
 	setdate(y,m,d,h);
 }
 
@@ -46,6 +46,11 @@ int eightchar::setdate(int y, int m, int d, int h){
 	mon.input  = m;
 	day.input  = d;
 	hour.input = h;
+
+	int l = 0;
+
+	// transfer y, m, d to lunar calendar.
+	tfl.ToLunar(&y, &m, &d, &h, &l);
 
 	// year and month must lunar calendar
 	yearinfo(y,m,d);
@@ -68,8 +73,8 @@ int eightchar::yearinfo(int y, int m, int d) {
 }
 
 int eightchar::moninfo(int y, int m, int d) {
-	mon.sky = ( ( ( ( year.sky + 1 ) % 5 ) * 2 ) + ( mon.input - 1 ) ) % 10 ;
-	mon.earth = ( mon.input + 1 ) % 12;
+	mon.sky = ( ( ( ( year.sky + 1 ) % 5 ) * 2 ) + ( m - 1 ) ) % 10 ;
+	mon.earth = ( m + 1 ) % 12;
 
 	return 0;
 }

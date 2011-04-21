@@ -4,14 +4,17 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../src/ToFromLunar.cpp \
 ../src/eightchar.cpp \
 ../src/eightcharacter.cpp 
 
 OBJS += \
+./src/ToFromLunar.o \
 ./src/eightchar.o \
 ./src/eightcharacter.o 
 
 CPP_DEPS += \
+./src/ToFromLunar.d \
 ./src/eightchar.d \
 ./src/eightcharacter.d 
 

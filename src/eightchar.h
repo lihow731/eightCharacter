@@ -2,11 +2,13 @@
  * eightchar.h
  *
  *  Created on: Apr 19, 2011
- *      Author: leon<lihow731@gmail.com>
+ *      Author: Leon.L<lihow731@gmail.com>
  */
 
 #ifndef EIGHTCHAR_H_
 #define EIGHTCHAR_H_
+
+#include "ToFromLunar.h"
 
 struct echarinfo {
 	int input;
@@ -37,6 +39,8 @@ private:
 	int dayinfo (void);
 	int hourinfo(void);
 	int hiddenSky(struct echarinfo *einfo);
+
+	ToFromLunar tfl;
 };
 
 

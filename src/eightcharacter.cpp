@@ -16,7 +16,7 @@ int pinfo(struct echarinfo info) {
 
 int main() {
 	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
-	eightchar e(2011, 4 , 21, 14);
+	eightchar e(1978, 7, 31, 10);
 	cout << "year : ";
 	pinfo(e.year);
 	cout << "month: ";// << e.mon.input << "\t" << e.mon.sky << " " << e.mon.earth << endl;
