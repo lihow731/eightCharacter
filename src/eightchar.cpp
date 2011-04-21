@@ -47,22 +47,27 @@ int eightchar::setdate(int y, int m, int d, int h){
 	day.input  = d;
 	hour.input = h;
 
-	yearinfo();
-	moninfo();
+	// year and month must lunar calendar
+	yearinfo(y,m,d);
+	moninfo(y,m,d);
 	dayinfo();
 	hourinfo();
 
+	hiddenSky(&year);
+	hiddenSky(&mon);
+	hiddenSky(&day);
+	hiddenSky(&hour);
 	return 0;
 }
 
-int eightchar::yearinfo(void) {
+int eightchar::yearinfo(int y, int m, int d) {
 	year.sky   = ( ( year.input + 6 ) % 10 );
 	year.earth = ( ( year.input + 8 ) % 12 );
 
 	return 0;
 }
 
-int eightchar::moninfo(void) {
+int eightchar::moninfo(int y, int m, int d) {
 	mon.sky = ( ( ( ( year.sky + 1 ) % 5 ) * 2 ) + ( mon.input - 1 ) ) % 10 ;
 	mon.earth = ( mon.input + 1 ) % 12;
 
@@ -70,25 +75,138 @@ int eightchar::moninfo(void) {
 }
 
 int eightchar::dayinfo(void) {
+
+	/*
+	int isLeap(){
+		y=$1
+		A=`expr $y % 4`
+		B=`expr $y % 100`
+		C=`expr $y % 400`
+		if ( test $A -eq 0 && test $B -ne 0 || test $C -eq 0 ) ; then
+			return 0 #is leap
+		else
+			return 1
+		fi
+	}
+	if `isLeap $y`  ; then
+		ydays=$(( ${monYday_leap[$((m - 1))]} - 1 + d ))
+
+	else
+		ydays=$(( ${monYday_normal[$((m - 1))]} - 1 + d))
+	fi
+	if test $iH -ge 23 ; then
+		tempDS=$(( ($tempS + $ydays ) % 10 + 1 ))
+		tempDE=$(( ($tempE + $ydays ) % 12 + 1 ))
+	else
+		tempDS=$(( ($tempS + $ydays ) % 10 ))
+		tempDE=$(( ($tempE + $ydays ) % 12 ))
+	fi
+	*/
+
+	static int monYday_normal[]={0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365};
+	static int monYday_leap[]  ={0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366};
+
+	int ydays = 0;
+	int A = year.input % 4;
+	int B = year.input % 100;
+	int C = year.input % 400;
+
+	if ( ( A == 0 && B != 0 ) || C == 0  )
+		ydays = monYday_normal[mon.input - 1] - 1 + day.input;
+	else
+		ydays = monYday_leap  [mon.input - 1] - 1 + day.input;
+
+	// how many leap day from AD 0
+	int countLeapY = ( ( ( year.input - 1 ) / 4 ) - ( ( year.input - 1 ) / 100) + ( ( year.input - 1 ) / 400 ));
+
+	// The first day of the year.
+	int firstdayS = ( 9 + (5 * year.input) + countLeapY ) % 10;
+	int firstdayE = ( 9 + (5 * year.input) + countLeapY ) % 12;
+
+	if ( hour.input >= 23 ) {
+		day.sky   = ( ydays + firstdayS + 1 ) % 10;
+		day.earth = ( ydays + firstdayE + 1 ) % 12;
+	}
+	else {
+		day.sky   = ( ydays + firstdayS ) % 10;
+		day.earth = ( ydays + firstdayE ) % 12;
+	}
+
+
 	return 0;
 }
 
 int eightchar::hourinfo(void) {
+	//five mice dung
+	int firstHour = (day.sky % 5) * 2;
+
+	hour.earth = ( ( hour.input + 1 ) % 24 ) / 2;
+	hour.sky   = ( hour.earth + firstHour ) % 10;
 	return 0;
 }
 
-int eightchar::hiddenSky(struct echarinfo einfo) {
-	switch (einfo.sky)
+int eightchar::hiddenSky(struct echarinfo *einfo) {
+	switch (einfo->sky)
 	{
 	case 0:
-		einfo.hidden1 = 9;
-		einfo.hidden2 = -1;
-		einfo.hidden3 = -1;
+		einfo->hidden1 = 9;
+		einfo->hidden2 = -1;
+		einfo->hidden3 = -1;
 		break;
 	case 1:
-		einfo.hidden1 = 6;
-		einfo.hidden2 = 9;
-		einfo.hidden3 = 7;
+		einfo->hidden1 = 6;
+		einfo->hidden2 = 9;
+		einfo->hidden3 = 7;
+		break;
+	case 2:
+		einfo->hidden1 = 0;
+		einfo->hidden2 = 2;
+		einfo->hidden3 = 4;
+		break;
+	case 3:
+		einfo->hidden1 = 1;
+		einfo->hidden2 = -1;
+		einfo->hidden3 = -1;
+		break;
+	case 4:
+		einfo->hidden1 = 4;
+		einfo->hidden2 = 1;
+		einfo->hidden3 = 9;
+		break;
+	case 5:
+		einfo->hidden1 = 2;
+		einfo->hidden2 = 4;
+		einfo->hidden3 = 6;
+		break;
+	case 6:
+		einfo->hidden1 = 3;
+		einfo->hidden2 = 5;
+		einfo->hidden3 = -1;
+		break;
+	case 7:
+		einfo->hidden1 = 5;
+		einfo->hidden2 = 1;
+		einfo->hidden3 = 3;
+		break;
+	case 8:
+		einfo->hidden1 = 6;
+		einfo->hidden2 = 4;
+		einfo->hidden3 = 8;
+		break;
+	case 9:
+		einfo->hidden1 = 7;
+		einfo->hidden2 = -1;
+		einfo->hidden3 = -1;
+		break;
+	case 10:
+		einfo->hidden1 = 4;
+		einfo->hidden2 = 7;
+		einfo->hidden3 = 3;
+		break;
+	case 11:
+		einfo->hidden1 = 8;
+		einfo->hidden2 = -1;
+		einfo->hidden3 = -1;
 		break;
 
 	}

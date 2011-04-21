@@ -32,11 +32,11 @@ public:
 
 private:
 	struct tm* now;
-	int yearinfo(void);
-	int moninfo (void);
+	int yearinfo(int y, int m, int d);
+	int moninfo (int y, int m, int d);
 	int dayinfo (void);
 	int hourinfo(void);
-	int hiddenSky(struct echarinfo einfo);
+	int hiddenSky(struct echarinfo *einfo);
 };
 
 
