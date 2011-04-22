@@ -62,6 +62,17 @@ int eightchar::setdate(int y, int m, int d, int h){
 	hiddenSky(&mon);
 	hiddenSky(&day);
 	hiddenSky(&hour);
+
+	year.longlife = longlifeinfo(day.sky,  year.earth);
+	mon.longlife  = longlifeinfo(day.sky,  mon.earth );
+	day.longlife  = longlifeinfo(day.sky,  day.earth );
+	hour.longlife = longlifeinfo(day.sky,  hour.earth);
+
+	year.sixty = sixtyNaYin(year.sky, year.earth);
+	mon.sixty  = sixtyNaYin(mon.sky,  mon.earth );
+	day.sixty  = sixtyNaYin(day.sky,  day.earth );
+	hour.sixty = sixtyNaYin(hour.sky, hour.earth);
+
 	return 0;
 }
 
@@ -216,4 +227,23 @@ int eightchar::hiddenSky(struct echarinfo *einfo) {
 
 	}
 	return 0;
+}
+
+int eightchar::longlifeinfo(int s, int e) {
+	// the long life symbol at earth[0]
+	int llTable[] = { 1, 6, 10, 9, 10, 9, 10, 0, 4, 3 };
+	int ll = llTable[s];
+	int order = 1;
+	if ( s % 2 )
+		order = -1;
+
+	for ( int i = 0 ; i < e ; i ++) {
+		ll += order;
+	}
+
+	return (ll + 12) % 12;
+};
+
+int eightchar::sixtyNaYin(int s, int e) {
+	return ( ( ( ( s - e + 12 ) % 12 ) * 5 ) / 2 ) + ( s / 2);
 }
