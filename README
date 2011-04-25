@@ -1,8 +1,14 @@
-Input your birth information (include year, month, day and time).
-Output Chinese Eight Character.
+This project supply a Eight Character class (class eightchar).
+Programer can use this class to calculate Eight Character.
 
+Pleas refer eightcharacter.cpp to know how to use this class.
+
+Build eightcharacter.cpp:
 Make binary
-$ make 
+$ cd Release 
+$ make clean
+$ make eightcharacter
 
 Compute the days of certain year.
-$ ./eightchar 2011 3 25
+intpu: year month day hour
+$ ./eightcharacter 2011 4 25 11

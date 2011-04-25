@@ -24,17 +24,19 @@ int pinfo(struct echarinfo info) {
 	return 0;
 }
 
-int main() {
-	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
-	eightchar e(1978, 7, 31, 10);
-	cout << "year : ";
-	pinfo(e.year);
-	cout << "month: ";// << e.mon.input << "\t" << e.mon.sky << " " << e.mon.earth << endl;
-	pinfo(e.mon);
-	cout << "day  : ";// << e.day.input << "\t" << e.day.sky << " " << e.day.earth << endl;
-	pinfo(e.day);
-	cout << "hour : ";// << e.hour.input << "\t" << e.hour.sky << " " << e.hour.earth << endl;
-	pinfo(e.hour);
+int main(int argc, char *argv[]) {
+	if ( argc > 4 ) {
+		eightchar e(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
+		cout << "year : ";
+		pinfo(e.year);
+		cout << "month: ";// << e.mon.input << "\t" << e.mon.sky << " " << e.mon.earth << endl;
+		pinfo(e.mon);
+		cout << "day  : ";// << e.day.input << "\t" << e.day.sky << " " << e.day.earth << endl;
+		pinfo(e.day);
+		cout << "hour : ";// << e.hour.input << "\t" << e.hour.sky << " " << e.hour.earth << endl;
+		pinfo(e.hour);
+
+	}
 
 	return 0;
 }
