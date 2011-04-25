@@ -11,10 +11,10 @@
 
 eightchar::eightchar() {
 	// TODO Auto-generated constructor stub
-	bzero((void *)&year, sizeof(echarinfo));
-	bzero((void *)&mon,  sizeof(echarinfo));
-	bzero((void *)&day,  sizeof(echarinfo));
-	bzero((void *)&hour, sizeof(echarinfo));
+	memset((void *)&year, 0x0, sizeof(echarinfo));
+	memset((void *)&mon,  0x0, sizeof(echarinfo));
+	memset((void *)&day,  0x0, sizeof(echarinfo));
+	memset((void *)&hour, 0x0, sizeof(echarinfo));
 
 	tfl.readDB();
 
@@ -30,10 +30,17 @@ eightchar::~eightchar() {
 }
 
 eightchar::eightchar(int y, int m, int d, int h) {
+#ifndef _WINDOWS
 	bzero((void *)&year, sizeof(echarinfo));
 	bzero((void *)&mon,  sizeof(echarinfo));
 	bzero((void *)&day,  sizeof(echarinfo));
 	bzero((void *)&hour, sizeof(echarinfo));
+#else
+	memset((void *)&year, 1, sizeof(echarinfo));
+	memset((void *)&mon,  1, sizeof(echarinfo));
+	memset((void *)&day,  1, sizeof(echarinfo));
+	memset((void *)&hour, 1, sizeof(echarinfo));
+#endif
 
 	tfl.readDB();
 
@@ -72,6 +79,11 @@ int eightchar::setdate(int y, int m, int d, int h){
 	mon.sixty  = sixtyNaYin(mon.sky,  mon.earth );
 	day.sixty  = sixtyNaYin(day.sky,  day.earth );
 	hour.sixty = sixtyNaYin(hour.sky, hour.earth);
+
+	year.empty = emptyinfo(year.sky, year.earth);
+	mon.empty  = emptyinfo(mon.sky,  mon.earth );
+	day.empty  = emptyinfo(day.sky,  day.earth );
+	hour.empty = emptyinfo(hour.sky, hour.earth);
 
 	return 0;
 }
@@ -246,4 +258,16 @@ int eightchar::longlifeinfo(int s, int e) {
 
 int eightchar::sixtyNaYin(int s, int e) {
 	return ( ( ( ( s - e + 12 ) % 12 ) * 5 ) / 2 ) + ( s / 2);
+}
+
+int eightchar::emptyinfo(int s, int e) {
+	int empty = -1;
+	if ( s % 2 == e % 2 )
+	{
+		empty = ( e + ( 10 - s ) ) % 12;
+		if ( s % 2 != empty % 2 )
+			empty ++;
+	} 
+	
+	return empty;
 }

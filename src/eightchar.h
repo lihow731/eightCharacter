@@ -41,6 +41,7 @@ private:
 	int hiddenSky(struct echarinfo *einfo);
 	int longlifeinfo(int s, int e);
 	int sixtyNaYin(int s, int e);
+	int emptyinfo(int s, int e);
 
 	ToFromLunar tfl;
 };
