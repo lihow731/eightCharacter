@@ -140,9 +140,9 @@ int eightchar::dayinfo(void) {
 	int C = year.input % 400;
 
 	if ( ( A == 0 && B != 0 ) || C == 0  )
-		ydays = monYday_normal[mon.input - 1] - 1 + day.input;
+		ydays = monYday_leap  [mon.input - 1] + day.input;
 	else
-		ydays = monYday_leap  [mon.input - 1] - 1 + day.input;
+		ydays = monYday_normal[mon.input - 1] + day.input;
 
 	// how many leap day from AD 0
 	int countLeapY = ( ( ( year.input - 1 ) / 4 ) - ( ( year.input - 1 ) / 100) + ( ( year.input - 1 ) / 400 ));
