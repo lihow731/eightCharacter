@@ -17,6 +17,7 @@ eightchar::eightchar() {
 	memset((void *)&hour, 0x0, sizeof(echarinfo));
 
 	tfl.readDB();
+	st.readDB24();
 
 	time_t result;
 	result = time(NULL);
@@ -36,13 +37,14 @@ eightchar::eightchar(int y, int m, int d, int h) {
 	bzero((void *)&day,  sizeof(echarinfo));
 	bzero((void *)&hour, sizeof(echarinfo));
 #else
-	memset((void *)&year, 1, sizeof(echarinfo));
-	memset((void *)&mon,  1, sizeof(echarinfo));
-	memset((void *)&day,  1, sizeof(echarinfo));
-	memset((void *)&hour, 1, sizeof(echarinfo));
+	memset((void *)&year, 0x0, sizeof(echarinfo));
+	memset((void *)&mon,  0x0, sizeof(echarinfo));
+	memset((void *)&day,  0x0, sizeof(echarinfo));
+	memset((void *)&hour, 0x0, sizeof(echarinfo));
 #endif
 
 	tfl.readDB();
+	st.readDB24();
 
 	setdate(y,m,d,h);
 }
@@ -58,6 +60,7 @@ int eightchar::setdate(int y, int m, int d, int h){
 
 	// transfer y, m, d to lunar calendar.
 	tfl.ToLunar(&y, &m, &d, &h, &l);
+	st.searchSolarTerm(y,m,d,h);
 
 	// year and month must lunar calendar
 	yearinfo(y,m,d);
@@ -84,6 +87,18 @@ int eightchar::setdate(int y, int m, int d, int h){
 	mon.empty  = emptyinfo(mon.sky,  mon.earth );
 	day.empty  = emptyinfo(day.sky,  day.earth );
 	hour.empty = emptyinfo(hour.sky, hour.earth);
+
+	lastSolarTerm.month = st.c_month;
+	lastSolarTerm.day   = st.c_day;
+	lastSolarTerm.hour	= st.c_hour;
+	lastSolarTerm.minute= st.c_minute;
+	lastSolarTerm.second= st.c_second;
+
+	nextSolarTerm.month = st.n_month;
+	nextSolarTerm.day   = st.n_day;
+	nextSolarTerm.hour  = st.n_hour;
+	nextSolarTerm.minute= st.n_minute;
+	nextSolarTerm.second= st.n_second;
 
 	return 0;
 }

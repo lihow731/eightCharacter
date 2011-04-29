@@ -1,3 +1,9 @@
+/*
+ * ToFromLunar.h
+ *
+ *  Created on: Apr 29, 2011
+ *      Author: Leon.L<lihow731@gmail.com>
+ */
 #pragma once
 #define SISLEAP(year)  ( ( ( year % 4  == 0 ) && ( year % 100 != 0 ) )  || ( year % 400 == 0 ) )
 

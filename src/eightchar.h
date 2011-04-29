@@ -1,7 +1,7 @@
 /*
  * eightchar.h
  *
- *  Created on: Apr 19, 2011
+ *  Created on: Apr 29, 2011
  *      Author: Leon.L<lihow731@gmail.com>
  */
 
@@ -9,6 +9,7 @@
 #define EIGHTCHAR_H_
 
 #include "ToFromLunar.h"
+#include "Solarterm.h"
 
 struct echarinfo {
 	int input;
@@ -22,6 +23,14 @@ struct echarinfo {
 	int hidden3;
 };
 
+struct solarterminfo{
+	int  month  ;
+	int  day    ;
+	int  hour   ;
+	int  minute ;
+	int  second ;
+};
+
 class eightchar {
 public:
 	eightchar();
@@ -29,8 +38,10 @@ public:
 	~eightchar();
 	int setdate(int y, int m, int d, int h);
 
-	//
+	// public information
 	struct echarinfo year, mon, day, hour;
+	struct solarterminfo lastSolarTerm, nextSolarTerm;
+	int    sex;
 
 private:
 	struct tm* now;
@@ -44,6 +55,7 @@ private:
 	int emptyinfo(int s, int e);
 
 	ToFromLunar tfl;
+	Solarterm st;
 };
 
 
